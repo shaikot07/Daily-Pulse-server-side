@@ -36,6 +36,7 @@ async function run() {
             // start operation 
 
             const userCollection =client.db('dailypulseDB').collection('users');
+            const articleCollection =client.db('dailypulseDB').collection('article');
 
 
 
@@ -53,7 +54,11 @@ async function run() {
                   res.send(result);
             })
 
-
+            // article related  api 
+            app.get('/article', async (req,res)=>{
+                  const result = await  articleCollection.find().toArray();
+                  res.send(result)
+            })
 
             // Send a ping to confirm a successful connection
             await client.db("admin").command({ ping: 1 });
