@@ -16,7 +16,7 @@ app.use(express.json());
 
 console.log(process.env.DB_PASS);
 
-const { MongoClient, ServerApiVersion } = require('mongodb');
+const { MongoClient, ServerApiVersion, ObjectId } = require('mongodb');
 const uri = `mongodb+srv://${process.env.DB_USER}:${process.env.DB_PASS}@cluster0.loifkbc.mongodb.net/?retryWrites=true&w=majority`;
 // const uri = "mongodb+srv://<username>:<password>@cluster0.loifkbc.mongodb.net/?retryWrites=true&w=majority";
 
@@ -70,7 +70,24 @@ async function run() {
                   const query = { email: email }
                   const result = await articleCollection.find(query).toArray();
                   res.send(result)
-                });
+            });
+            // get 1 data by id for updated 
+            app.get('/article/:id', async (req, res) => {
+                  const id = req.params.id;
+                  const query = { _id: new ObjectId(id) }
+                  const result = await articleCollection.findOne(query);
+                  res.send(result);
+             })
+
+            //  delete one article by id 
+            app.delete('/article/:id',  async (req, res) => {
+                  const id = req.params.id;
+                  const query = { _id: new ObjectId(id) }
+                  const result = await articleCollection.deleteOne(query);
+                  res.send(result)
+                })
+
+
             // Send a ping to confirm a successful connection
             await client.db("admin").command({ ping: 1 });
             console.log("Pinged your deployment. You successfully connected to MongoDB!");
