@@ -35,31 +35,31 @@ async function run() {
             // await client.connect();
             // start operation 
 
-            const userCollection =client.db('dailypulseDB').collection('users');
-            const articleCollection =client.db('dailypulseDB').collection('article');
+            const userCollection = client.db('dailypulseDB').collection('users');
+            const articleCollection = client.db('dailypulseDB').collection('article');
 
 
 
 
             // user relataded api 
-            app.post('/users', async (req,res)=>{
+            app.post('/users', async (req, res) => {
                   const user = req.body;
                   // insert email if user  doseno't exists 
-                  const query = {email: user.email}
+                  const query = { email: user.email }
                   const existingUser = await userCollection.findOne(query);
-                  if(existingUser){
-                        return res.send({message: 'User already exists', insertedId: null})
+                  if (existingUser) {
+                        return res.send({ message: 'User already exists', insertedId: null })
                   }
                   const result = await userCollection.insertOne(user);
                   res.send(result);
             })
 
             // article related  api 
-            app.get('/article', async (req,res)=>{
-                  const result = await  articleCollection.find().toArray();
+            app.get('/article', async (req, res) => {
+                  const result = await articleCollection.find().toArray();
                   res.send(result)
             })
-            app.post('/article',  async (req, res) => {
+            app.post('/article', async (req, res) => {
                   const item = req.body;
                   const result = await articleCollection.insertOne(item);
                   res.send(result)
@@ -71,21 +71,35 @@ async function run() {
                   const result = await articleCollection.find(query).toArray();
                   res.send(result)
             });
-            // get 1 data by id for updated 
-            app.get('/article/:id', async (req, res) => {
+
+            // updateed korar kj  api 
+            app.patch('/article/:id', async (req, res) => {
+                  const item = req.body;
                   const id = req.params.id;
-                  const query = { _id: new ObjectId(id) }
-                  const result = await articleCollection.findOne(query);
+                  const filter = { _id: new ObjectId(id) }
+                  const updatedDoc = {
+                        $set: {
+                              title: item.title,
+                              publisher: item.publisher,
+                              description: item.description,
+                              articleAuthorName: item.articleAuthorName,
+                              articleAuthorEmail: item.articleAuthorEmail,
+                              postedDate: item.postedDate,
+                              image: item.image
+                        }
+                  }
+
+                  const result = await articleCollection.updateOne(filter, updatedDoc)
                   res.send(result);
-             })
+            })
 
             //  delete one article by id 
-            app.delete('/article/:id',  async (req, res) => {
+            app.delete('/article/:id', async (req, res) => {
                   const id = req.params.id;
                   const query = { _id: new ObjectId(id) }
                   const result = await articleCollection.deleteOne(query);
                   res.send(result)
-                })
+            })
 
 
             // Send a ping to confirm a successful connection
