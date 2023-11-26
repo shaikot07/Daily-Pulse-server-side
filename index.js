@@ -48,6 +48,24 @@ async function run() {
                   res.send(result)
             });
 
+            // admin check kore dekhbe j admin ki na 
+            app.get('/users/admin/:email',  async (req, res) => {
+                  const email = req.params.email;
+
+                  if (email !== req.decoded.email) {
+                        return res.status(403).send({ message: 'forbidden access' })
+                  }
+
+                  const query = { email: email };
+                  const user = await userCollection.findOne(query);
+                  let admin = false;
+                  if (user) {
+                        admin = user?.role === 'admin';
+                  }
+                  res.send({ admin });
+            })
+
+
             app.post('/users', async (req, res) => {
                   const user = req.body;
                   // insert email if user  doseno't exists 
@@ -61,7 +79,7 @@ async function run() {
             })
 
             // adddmin bana nor jonno fild update 
-            app.patch('/users/admin/:id',  async (req, res) => {
+            app.patch('/users/admin/:id', async (req, res) => {
                   const id = req.params.id;
                   const filter = { _id: new ObjectId(id) };
                   const updatedDoc = {
