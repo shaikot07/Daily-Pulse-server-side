@@ -126,7 +126,12 @@ async function run() {
                   const result = await publisherleCollection.find().toArray();
                   res.send(result)
             })
-
+            // added publisher by ADMIN 
+            app.post('/publisher', async (req, res) => {
+                  const item = req.body;
+                  const result = await publisherleCollection.insertOne(item);
+                  res.send(result)
+            });
 
 
 
