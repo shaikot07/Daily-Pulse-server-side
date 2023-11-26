@@ -37,6 +37,7 @@ async function run() {
 
             const userCollection = client.db('dailypulseDB').collection('users');
             const articleCollection = client.db('dailypulseDB').collection('article');
+            const publisherleCollection = client.db('dailypulseDB').collection('publisher');
 
 
 
@@ -100,6 +101,15 @@ async function run() {
                   const result = await articleCollection.deleteOne(query);
                   res.send(result)
             })
+            // publisher related api 
+
+            app.get('/publisher', async (req, res) => {
+                  const result = await publisherleCollection.find().toArray();
+                  res.send(result)
+            })
+
+            // pychart related api 
+
 
 
             // Send a ping to confirm a successful connection
