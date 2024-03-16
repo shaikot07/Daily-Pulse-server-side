@@ -126,7 +126,12 @@ async function run() {
                   const result = await userCollection.updateOne(filter, updatedDoc);
                   res.send(result)
             })
-
+            app.delete('/users/admin/:id',  async (req, res) => {
+                  const id = req.params.id;
+                  const query = { _id: new ObjectId(id) }
+                  const result = await userCollection.deleteOne(query);
+                  res.send(result)
+            })
 
             // article related  api 
             app.get('/article', async (req, res) => {
