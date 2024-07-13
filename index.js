@@ -39,10 +39,6 @@ async function run() {
             const articleCollection = client.db('dailypulseDB').collection('article');
             const publisherleCollection = client.db('dailypulseDB').collection('publisher');
 
-
-
-
-
             // jwt related api 
             app.post('/jwt', async (req, res) => {
                   const user = req.body;
@@ -71,7 +67,8 @@ async function run() {
                   const email = req.decoded.email;
                   const query = { email: email };
                   const user = await userCollection.findOne(query);
-                  const isAdmin = user?.role === 'admin';
+                  // const isAdmin = user?.role === 'admin';
+                  const isAdmin = user?.status === 'admin';
                   if (!isAdmin) {
                         return res.status(403).send({ message: 'forbidden access' });
                   }
@@ -96,7 +93,8 @@ async function run() {
                   const user = await userCollection.findOne(query);
                   let admin = false;
                   if (user) {
-                        admin = user?.role === 'admin';
+                        // admin = user?.role === 'admin';
+                        admin = user?.status === 'admin';
                   }
                   res.send({ admin });
             })
